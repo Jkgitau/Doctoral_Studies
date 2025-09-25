@@ -1,0 +1,26 @@
+#!/bin/bash
+#SBATCH --job-name=download_ATAC_Seq_data
+#SBATCH --time=10:00:00
+#SBATCH --account=def-zoejl
+#SBATCH --mem=8G
+#SBATCH --cpus-per-task=4
+#SBATCH --output=../error_reports/ATAC_%A_%a.out
+#SBATCH --error=../error_reports/ATAC_%A_%a.err
+#SBATCH --array=0-7   # 8runs, index 0 ^`^s11
+
+# List all the SRR numbers for parallel download
+SRR_LIST=(SRR10991557 SRR10991558 SRR10991559 SRR10991560 SRR10991561 SRR10991562 SRR10991563 SRR10991564)
+
+
+# Load SRA Toolkit 
+module load sra-toolkit/3.0.9
+
+
+srr=${SRR_LIST[$SLURM_ARRAY_TASK_ID]}
+echo "Processing $srr ..."
+fasterq-dump $srr --split-files --threads 4 --progress -O ../ATAC-seq/fastq_files
+
+
+
+
+
